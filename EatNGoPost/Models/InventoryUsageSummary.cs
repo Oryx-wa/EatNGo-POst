@@ -12,5 +12,6 @@ namespace EatNGoPost.Models
         public int Hour { get; set; }
         public float PortionUsage { get; set; }
         public int id { get; set; }
+        public string errMsg { get; set; }
     }
 }

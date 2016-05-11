@@ -70,7 +70,7 @@ namespace EatNGoPost.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Sap101..")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Sap102..")]
         public string SAPPassword {
             get {
                 return ((string)(this["SAPPassword"]));

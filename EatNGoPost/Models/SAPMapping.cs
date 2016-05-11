@@ -11,5 +11,7 @@ namespace EatNGoPost.Models
         public string WhsCode { get; set; }
         public string PrcCode { get; set; }
         public string BPCode { get; set; }
+        public string CashGL { get; set; }
+        public string BankGL { get; set; }
     }
 }

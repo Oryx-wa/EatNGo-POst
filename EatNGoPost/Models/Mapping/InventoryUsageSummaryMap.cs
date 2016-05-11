@@ -26,6 +26,9 @@ namespace EatNGoPost.Models.Mapping
             this.Property(t => t.id)
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
+            this.Property(t => t.errMsg)
+                .HasMaxLength(250);
+
             // Table & Column Mappings
             this.ToTable("InventoryUsageSummary");
             this.Property(t => t.Location_Code).HasColumnName("Location_Code");
@@ -34,6 +37,7 @@ namespace EatNGoPost.Models.Mapping
             this.Property(t => t.Hour).HasColumnName("Hour");
             this.Property(t => t.PortionUsage).HasColumnName("PortionUsage");
             this.Property(t => t.id).HasColumnName("id");
+            this.Property(t => t.errMsg).HasColumnName("errMsg");
         }
     }
 }

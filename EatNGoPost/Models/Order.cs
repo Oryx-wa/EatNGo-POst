@@ -111,6 +111,7 @@ namespace EatNGoPost.Models
         public Nullable<System.DateTime> OrderExpediteTime { get; set; }
         public int id { get; set; }
         public Nullable<int> DocNum { get; set; }
+        public string ErrMsg { get; set; }
         public virtual ICollection<Order_Lines> Order_Lines { get; set; }
         public virtual ICollection<OrderPayments2> OrderPayments2 { get; set; }
     }

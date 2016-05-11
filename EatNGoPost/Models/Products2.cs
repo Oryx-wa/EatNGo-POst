@@ -38,5 +38,6 @@ namespace EatNGoPost.Models
         public Nullable<bool> ProductIsShortcut { get; set; }
         public int ProductShortcutDisplaySeq { get; set; }
         public string Created { get; set; }
+        public string errMsg { get; set; }
     }
 }

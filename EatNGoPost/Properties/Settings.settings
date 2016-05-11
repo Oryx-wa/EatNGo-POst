@@ -18,7 +18,7 @@
       <Value Profile="(Default)">Oryx</Value>
     </Setting>
     <Setting Name="SAPPassword" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Sap101..</Value>
+      <Value Profile="(Default)">Sap102..</Value>
     </Setting>
     <Setting Name="Staging" Type="System.String" Scope="Application">
       <Value Profile="(Default)">Data Source=localhost;Initial Catalog=Staging;Persist Security Info=True;User ID=sa;Password=sql2k</Value>

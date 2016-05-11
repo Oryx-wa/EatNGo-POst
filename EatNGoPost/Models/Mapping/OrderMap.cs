@@ -128,6 +128,9 @@ namespace EatNGoPost.Models.Mapping
             this.Property(t => t.id)
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
+            this.Property(t => t.ErrMsg)
+                .HasMaxLength(254);
+
             // Table & Column Mappings
             this.ToTable("Orders");
             this.Property(t => t.Location_Code).HasColumnName("Location_Code");
@@ -229,6 +232,7 @@ namespace EatNGoPost.Models.Mapping
             this.Property(t => t.OrderExpediteTime).HasColumnName("OrderExpediteTime");
             this.Property(t => t.id).HasColumnName("id");
             this.Property(t => t.DocNum).HasColumnName("DocNum");
+            this.Property(t => t.ErrMsg).HasColumnName("ErrMsg");
         }
     }
 }

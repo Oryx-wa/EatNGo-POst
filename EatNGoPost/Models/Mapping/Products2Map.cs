@@ -64,6 +64,9 @@ namespace EatNGoPost.Models.Mapping
                 .IsFixedLength()
                 .HasMaxLength(1);
 
+            this.Property(t => t.errMsg)
+                .HasMaxLength(250);
+
             // Table & Column Mappings
             this.ToTable("Products2");
             this.Property(t => t.ProductCode).HasColumnName("ProductCode");
@@ -98,6 +101,7 @@ namespace EatNGoPost.Models.Mapping
             this.Property(t => t.ProductIsShortcut).HasColumnName("ProductIsShortcut");
             this.Property(t => t.ProductShortcutDisplaySeq).HasColumnName("ProductShortcutDisplaySeq");
             this.Property(t => t.Created).HasColumnName("Created");
+            this.Property(t => t.errMsg).HasColumnName("errMsg");
         }
     }
 }

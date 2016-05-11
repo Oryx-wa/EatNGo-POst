@@ -31,6 +31,12 @@ namespace EatNGoPost.Models.Mapping
             this.Property(t => t.BPCode)
                 .HasMaxLength(50);
 
+            this.Property(t => t.CashGL)
+                .HasMaxLength(20);
+
+            this.Property(t => t.BankGL)
+                .HasMaxLength(20);
+
             // Table & Column Mappings
             this.ToTable("SAPMapping");
             this.Property(t => t.Location_Code).HasColumnName("Location_Code");
@@ -38,6 +44,8 @@ namespace EatNGoPost.Models.Mapping
             this.Property(t => t.WhsCode).HasColumnName("WhsCode");
             this.Property(t => t.PrcCode).HasColumnName("PrcCode");
             this.Property(t => t.BPCode).HasColumnName("BPCode");
+            this.Property(t => t.CashGL).HasColumnName("CashGL");
+            this.Property(t => t.BankGL).HasColumnName("BankGL");
         }
     }
 }

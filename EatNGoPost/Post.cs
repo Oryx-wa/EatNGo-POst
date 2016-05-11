@@ -74,8 +74,11 @@ namespace EatNGoPost
                 Console.WriteLine(ex.Message);
             }
 
-           
-            Console.WriteLine("Connection to SAP ok.");
+            if (ret)
+            {
+                Console.WriteLine("Connection to SAP ok.");   
+            }
+            
             //Return True
             return ret;
 
@@ -87,7 +90,7 @@ namespace EatNGoPost
             {
                 using (var context = new POSStagingContext())
                 {
-                    var Products = context.Products2;
+                    var Products = context.Products2.Where(P => P.Created == "N");
                     SAPbobsCOM.Items oitm = (SAPbobsCOM.Items)oCompany.GetBusinessObject(BoObjectTypes.oItems);
 
                     foreach (var item in Products)
@@ -100,20 +103,26 @@ namespace EatNGoPost
                             oitm.SalesItem = BoYesNoEnum.tYES;
                             oitm.InventoryItem = BoYesNoEnum.tNO;
                             oitm.ItemsGroupCode = 115;
+                            oitm.SalesVATGroup = "X0";
 
                             if (oitm.Add() != 0)
                             {
                                 oCompany.GetLastError(out errCode, out errMsg);
                                 Console.WriteLine(errMsg);
-                                oCompany.Disconnect();
+
+
+                                //oCompany.Disconnect();
                             }
                             else
                             {
+                                item.Created = "Y";
+                                
                                 Console.WriteLine(item.ProductCode + "- created successfully ");
                             }
                         }
                         
                     }
+                    context.SaveChanges();
                 }
             }
             catch (Exception ex)
@@ -131,32 +140,53 @@ namespace EatNGoPost
                 using (var context = new POSStagingContext())
 
                 {
-                    var Orders = context.Orders.Include("Order_Lines").Include("OrderPayments2");
-                    foreach (var OINV in Orders)
+                    var loc = context.SAPMappings.ToList();
+                    var Orders = context.Orders.Include("Order_Lines").Include("OrderPayments2").Where(o => o.DocNum == 0 && o.Order_Status_Code  == 4).OrderBy(o => o.Location_Code).ThenBy(o=> o.Order_Date).ThenBy(o => o.Order_Number);
+                    int count;
+                    int x = 0;
+
+                    var countNum = (from c in context.Orders
+                                    where c.DocNum == 0 && c.Order_Status_Code == 4
+                                          select c.id).Count();
+
+                    count = countNum;
+
+                    //context.
+                    foreach (var OINV in Orders.ToList())
                     {
+                        //count = Orders.Count();
+                        Console.WriteLine("Creating doc." + x.ToString() + " of "  + count.ToString());
+                        x++;
                         SAPbobsCOM.Documents Invoice = (SAPbobsCOM.Documents)oCompany.GetBusinessObject(BoObjectTypes.oInvoices);
                         if (OINV.Order_Status_Code != 4)
                         {
                             continue;
                         }
+                        OINV.ErrMsg = "";
                         Invoice.DocDate = OINV.Order_Date;
                         Invoice.DocDueDate = OINV.Order_Date;
                         Invoice.Project = "DominoPizza";
                         string CardCode = "";
                         string CostCenter = "";
-                        switch (OINV.Location_Code)
+                        string cashGL = "";
+                        string BankGL = "";
+
+                        foreach (var Location in loc)
                         {
-                            case "51790":
-                                CardCode = "DP-SAKA";
-                                CostCenter = "L001";
-                                break;
-                            case "51792":
-                                CardCode = "DP-TOYIN";
-                                CostCenter = "L009";
-                                break;
-                            default:
-                                break;
+                            if (Location.Location_Code == OINV.Location_Code)
+                            {
+                                CardCode = Location.BPCode;
+                                CostCenter = Location.PrcCode;
+                                cashGL = Location.CashGL;
+                                BankGL = Location.BankGL;
+                            }
+                            else
+                            {
+                                continue;
+                            }
                         }
+                        
+                       
                         Invoice.CardCode = CardCode;
                         Invoice.UserFields.Fields.Item("U_POSNumber").Value = OINV.Order_Number;
                         Invoice.UserFields.Fields.Item("U_Location_Code").Value = OINV.Location_Code;
@@ -172,20 +202,48 @@ namespace EatNGoPost
                             Invoice.Lines.ItemCode = OrderLines.ProductCode;
                             Invoice.Lines.Quantity = OrderLines.Quantity;
                             Invoice.Lines.Price = (Double)(OrderLines.OrdLineTaxableSales / OrderLines.Quantity);
-                            Invoice.Lines.TaxCode = "X2";
+                            Invoice.Lines.TaxCode = "X0";
                             Invoice.Lines.UserFields.Fields.Item("U_IdealFood").Value = (Double) OrderLines.OrdLineIdealFoodOptionQty;
                             Invoice.Lines.CostingCode5 = "CM0002";
                             Invoice.Lines.CostingCode2 = CostCenter;
+                            Invoice.Lines.COGSCostingCode5 = "CM0002";
+                            Invoice.Lines.COGSCostingCode2 = CostCenter;
+
                             Invoice.Lines.ProjectCode = "DominoPizza";
 
                             i++;
 	                    }
+
+                        Invoice.Lines.Add();                        
+                        Invoice.Lines.SetCurrentLine(i);
+
+                                             
+
+                        Invoice.Lines.ItemCode = "VAT";
+                        Invoice.Lines.Quantity = 1;
+                        Invoice.Lines.Price = (Double)(OINV.Taxable_Sales1) * .05;
+                        Invoice.Lines.TaxCode = "X0";
+                        Invoice.Lines.ProjectCode = "DominoPizza";
+                        Invoice.Lines.AccountCode = "211501";
+                        
+                        i++;
+                        Invoice.Lines.Add();
+                        Invoice.Lines.SetCurrentLine(i);
+                        
+                        Invoice.Lines.ItemCode = "Consumption";
+                        Invoice.Lines.Quantity = 1;
+                        Invoice.Lines.Price = (Double)(OINV.Taxable_Sales1) * .05;
+                        Invoice.Lines.TaxCode = "X0";
+                        Invoice.Lines.ProjectCode = "DominoPizza";
+                        Invoice.Lines.AccountCode = "211505";
+
                         //oCompany.StartTransaction();
                         if (Invoice.Add() != 0)
                         {
                             oCompany.GetLastError(out errCode, out errMsg);
                             Console.WriteLine(errMsg);
-                            oCompany.Disconnect();
+                            OINV.ErrMsg += "-" + errMsg;
+                            //oCompany.Disconnect();
                             //if (oCompany.InTransaction)
                             //{
                             //    oCompany.EndTransaction(BoWfTransOpt.wf_RollBack);
@@ -194,8 +252,11 @@ namespace EatNGoPost
                         else
                         {
                             Console.WriteLine("Invoice for " + OINV.Location_Code+ " - "+ OINV.Order_Number + " - " +OINV.Order_Date.ToShortDateString()  + " - created successfully ");
+                            
                             var invNum = (from c in context.InvoiceNumbers
                                           select c.DocNum).Max();
+
+                            OINV.DocNum = invNum;
 
                             SAPbobsCOM.Payments Receipt = (SAPbobsCOM.Payments)oCompany.GetBusinessObject(BoObjectTypes.oIncomingPayments);
 
@@ -212,11 +273,11 @@ namespace EatNGoPost
                                 switch (OrderPayment.Order_Pay_Type_Code)
                                 {
                                     case 1:
-                                        Receipt.CashAccount = "124104";
+                                        Receipt.CashAccount = cashGL;
                                         Receipt.CashSum = (Double)OINV.OrderFinalPrice;
                                         break;
                                     case 4:
-                                        Receipt.TransferAccount = "124211";
+                                        Receipt.TransferAccount = BankGL;
                                         Receipt.TransferDate = OrderPayment.Order_Date;
                                         Receipt.TransferSum = (Double)OrderPayment.OrdPayAmt;
                                         if (OrderPayment.OrdPayEPayRefNumber.Length < 27)
@@ -238,6 +299,7 @@ namespace EatNGoPost
                                     oCompany.GetLastError(out errCode, out errMsg);
                                     Console.WriteLine(errMsg);
                                     oCompany.Disconnect();
+                                    OINV.ErrMsg += "-" +errMsg;
                                     //if (oCompany.InTransaction)
                                     //{
                                     //    oCompany.EndTransaction(BoWfTransOpt.wf_RollBack);
@@ -256,13 +318,28 @@ namespace EatNGoPost
                         //{
                         //    oCompany.EndTransaction(BoWfTransOpt.wf_Commit);
                         //}
+                        string strSql = "Update Orders Set DocNum = " + OINV.DocNum.ToString() + ", errMsg = '" + OINV.ErrMsg + "'" ;
+                        strSql += " Where id = " + OINV.id.ToString();
+                        int noOfRowsAffected = context.Database.ExecuteSqlCommand(strSql);
 
                         Console.WriteLine(OINV.Order_Number.ToString());
-                    }                 
-                    
-                    
+                        //using (var Context1 = new POSStagingContext())
+                        //{
+                        //    var Orders1 = context.Orders.Where(o => o.id == OINV.id).FirstOrDefault<Order>();
+                        //    Orders1.DocNum = OINV.DocNum;
 
+                        //    Context1.SaveChanges();
+                        //}
+
+                        
+                    }
+
+                    //context.SaveChanges();
+                    //Console.WriteLine(" ");
+                    //Console.WriteLine("Context saved successfully");
+                    
                 }
+                
             }
             catch (Exception ex)
             {
@@ -278,6 +355,13 @@ namespace EatNGoPost
         {
             try
             {
+                using (var context = new POSStagingContext())
+                {
+                    var loc = context.SAPMappings.ToList();
+                    var InvUse = context.InventoryUsageSummaries.ToList();
+
+                }
+
 
             }
             catch (Exception ex)
