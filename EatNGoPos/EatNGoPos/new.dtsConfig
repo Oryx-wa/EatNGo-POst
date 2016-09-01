@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DTSConfiguration>
+  <DTSConfigurationHeading>
+    <DTSConfigurationFileInfo GeneratedBy="SAPSERVER\Administrator" GeneratedFromPackageName="Package" GeneratedFromPackageID="{89EED0BC-FC18-4B0C-9A7C-A2236FE12628}" GeneratedDate="19/05/2016 19:35:14" />
+  </DTSConfigurationHeading>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::_51790].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=10.211.55.5;User ID=Oryx;Password=sql2k;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51790;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::_51791].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=197.234.39.226;User ID=Oryx;Password=sql2k;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51791;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::_51792].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=197.234.39.242;User ID=Oryx;Password=sql2k;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51792;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::_51793].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=197.234.39.230;User ID=Oryx;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51793;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::_51794].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=197.234.39.250;User ID=Oryx;Password=sql2k;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51794;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::_51795].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=197.234.40.74;User ID=Oryx;Password=sql2k;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51795;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::_51796].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=197.234.39.234;User ID=Oryx;Password=sql2k;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51796;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::_51798].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=197.234.43.222;User ID=Oryx;Password=sql2k;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51798;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::_51799].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=197.234.39.238;User ID=Oryx;Password=sql2k;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51799;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::_51800].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=197.234.39.222;User ID=Oryx;Password=sql2k;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51800;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::_51801].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=197.242.240.130;User ID=Oryx;Password=sql2k;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51801;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::_51804].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=197.234.39.98;User ID=Oryx;Password=sql2k;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51804;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::_51805].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=197.234.34.34;User ID=Oryx;Password=sql2k;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51805;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::_51806].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=197.242.248.58;User ID=Oryx;Password=sql2k;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51806;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::_51807].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=197.242.248.58;User ID=Oryx;Password=sql2k;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51807;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::OrderLines].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Select * from Order_Lines Where datediff(wk, order_date, getdate()) &lt; 2 and Order_Date &gt;= '2015-04-01'</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::OrderPayments].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Select * from OrderPayments2 Where datediff(wk, order_date, getdate()) &lt; 2 and Order_Date &gt;= '2015-04-01'</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::Orders].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Select * from Orders Where datediff(wk, order_date, getdate()) &lt;2 and Order_Date &gt;= '2015-04-01'</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::_51802].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=197.234.39.218;User ID=Oryx;Password=sql2k;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51802;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::_51803].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=197.234.48.42;User ID=Oryx;Password=sql2k;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51803;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::_51804].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=197.234.39.98;User ID=Oryx;Password=sql2k;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51804;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::Staging].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=.;User ID=Oryx;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=Staging;</ConfiguredValue>
+  </Configuration>
+</DTSConfiguration>

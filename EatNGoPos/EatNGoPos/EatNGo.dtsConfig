@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DTSConfiguration>
+  <DTSConfigurationHeading>
+    <DTSConfigurationFileInfo GeneratedBy="SAPSERVER\Administrator" GeneratedFromPackageName="51801" GeneratedFromPackageID="{53A979B7-28B5-4874-94C0-A3467B743D26}" GeneratedDate="20/05/2016 11:27:58" />
+  </DTSConfigurationHeading>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::ConnString].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=@Server;User ID=Oryx;Password=sql2k;Initial Catalog=POS;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=_51790;</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::Inventory].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Select * from InventoryUsageSummary Where datediff(wk, order_date, getdate()) &lt; 4 and Location_Code = '@p1'</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::NoOfWeeks].Properties[Value]" ValueType="String">
+    <ConfiguredValue>1</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::OrderLines].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Select * from Order_Lines Where datediff(wk, order_date, getdate()) &lt; -9999999 and Order_Date &gt;= '2015-04-01'  and Location_Code = '@p1'</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::OrderPayments].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Select * from OrderPayments2 Where datediff(wk, order_date, getdate()) &lt; -9999999 and Order_Date &gt;= '2015-04-01'  and Location_Code = '@p1'</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::Orders].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Select * from Orders Where datediff(wk, order_date, getdate()) &lt;-9999999 and Order_Date &gt;= '2015-04-01' and Location_Code = '@p1'</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::Products].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Select * from dbo.Products2</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::ProductsText].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Select * from dbo.ProductsText</ConfiguredValue>
+  </Configuration>
+  <Configuration ConfiguredType="Property" Path="\Package.Variables[User::Staging].Properties[Value]" ValueType="String">
+    <ConfiguredValue>Data Source=localhost;User ID=Oryx;Password=sql2k;Initial Catalog=POSStaging;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;Application Name=Staging;</ConfiguredValue>
+  </Configuration>
+</DTSConfiguration>
