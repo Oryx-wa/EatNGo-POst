@@ -10,5 +10,6 @@ namespace EatNGoPost.Models
         public string Location_Code { get; set; }
         public int Order_Number { get; set; }
         public System.DateTime Order_Date { get; set; }
+        public int ReceiptDocNum { get; set; }
     }
 }

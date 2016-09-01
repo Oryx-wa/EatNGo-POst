@@ -140,13 +140,22 @@ namespace EatNGoPost
                 using (var context = new POSStagingContext())
 
                 {
+                    Properties.Settings setting = new Properties.Settings();
                     var loc = context.SAPMappings.ToList();
-                    var Orders = context.Orders.Include("Order_Lines").Include("OrderPayments2").Where(o => o.DocNum == 0 && o.Order_Status_Code  == 4).OrderBy(o => o.Location_Code).ThenBy(o=> o.Order_Date).ThenBy(o => o.Order_Number);
+                    var Terminals = context.POSTerminals.ToList();
+                    string dateString = setting.DateStart;
+                    DateTime date1 = DateTime.Parse(dateString,
+                          System.Globalization.CultureInfo.InvariantCulture); 
+
+                    var Orders = context.Orders.Include("Order_Lines").Include("OrderPayments2")
+                        .Where(o => o.DocNum == 0 && o.Order_Status_Code == 4 && o.Order_Date >= date1)
+                        .OrderBy(o => o.Order_Date).ThenBy(o => o.Location_Code).ThenBy(o => o.Order_Number);
+
                     int count;
                     int x = 0;
 
                     var countNum = (from c in context.Orders
-                                    where c.DocNum == 0 && c.Order_Status_Code == 4
+                                    where c.DocNum == 0 && c.Order_Status_Code == 4 && c.Order_Date >= date1
                                           select c.id).Count();
 
                     count = countNum;
@@ -170,6 +179,7 @@ namespace EatNGoPost
                         string CostCenter = "";
                         string cashGL = "";
                         string BankGL = "";
+                        bool ConsumptionTax = true;
 
                         foreach (var Location in loc)
                         {
@@ -178,7 +188,9 @@ namespace EatNGoPost
                                 CardCode = Location.BPCode;
                                 CostCenter = Location.PrcCode;
                                 cashGL = Location.CashGL;
-                                BankGL = Location.BankGL;
+                                //BankGL = Location.BankGL;
+                                ConsumptionTax = Location.ConsumptionTax;
+                                break;
                             }
                             else
                             {
@@ -225,17 +237,20 @@ namespace EatNGoPost
                         Invoice.Lines.TaxCode = "X0";
                         Invoice.Lines.ProjectCode = "DominoPizza";
                         Invoice.Lines.AccountCode = "211501";
+                        if (ConsumptionTax)
+                        {
+                            i++;
+                            Invoice.Lines.Add();
+                            Invoice.Lines.SetCurrentLine(i);
+
+                            Invoice.Lines.ItemCode = "Consumption";
+                            Invoice.Lines.Quantity = 1;
+                            Invoice.Lines.Price = (Double)(OINV.Taxable_Sales1) * .05;
+                            Invoice.Lines.TaxCode = "X0";
+                            Invoice.Lines.ProjectCode = "DominoPizza";
+                            Invoice.Lines.AccountCode = "211505";
+                        }
                         
-                        i++;
-                        Invoice.Lines.Add();
-                        Invoice.Lines.SetCurrentLine(i);
-                        
-                        Invoice.Lines.ItemCode = "Consumption";
-                        Invoice.Lines.Quantity = 1;
-                        Invoice.Lines.Price = (Double)(OINV.Taxable_Sales1) * .05;
-                        Invoice.Lines.TaxCode = "X0";
-                        Invoice.Lines.ProjectCode = "DominoPizza";
-                        Invoice.Lines.AccountCode = "211505";
 
                         //oCompany.StartTransaction();
                         if (Invoice.Add() != 0)
@@ -270,6 +285,9 @@ namespace EatNGoPost
                                 Receipt.Invoices.SumApplied = (Double)OrderPayment.OrdPayAmt;
                                 Receipt.ProjectCode = "DominoPizza";
 
+                                Receipt.UserFields.Fields.Item("U_POSNumber").Value = OINV.Order_Number;
+                                Receipt.UserFields.Fields.Item("U_Location_Code").Value = OINV.Location_Code;
+
                                 switch (OrderPayment.Order_Pay_Type_Code)
                                 {
                                     case 1:
@@ -277,6 +295,21 @@ namespace EatNGoPost
                                         Receipt.CashSum = (Double)OINV.OrderFinalPrice;
                                         break;
                                     case 4:
+                                        BankGL = "";
+                                        foreach (var Term in Terminals)
+                                        {
+                                            if (OrderPayment.Credit_Card_ID == Term.Credit_Card_ID &&
+                                                OrderPayment.Location_Code == Term.Location_Code)
+                                            {
+                                                BankGL = Term.GLCode.ToString().TrimEnd();
+                                                break;
+                                            }
+                                        }
+                                        if (BankGL == "")
+                                        {
+                                            BankGL = "124211";
+                                        }
+
                                         Receipt.TransferAccount = BankGL;
                                         Receipt.TransferDate = OrderPayment.Order_Date;
                                         Receipt.TransferSum = (Double)OrderPayment.OrdPayAmt;
@@ -299,7 +332,7 @@ namespace EatNGoPost
                                     oCompany.GetLastError(out errCode, out errMsg);
                                     Console.WriteLine(errMsg);
                                     oCompany.Disconnect();
-                                    OINV.ErrMsg += "-" +errMsg;
+                                    OINV.ReceiptErrMsg += errMsg;
                                     //if (oCompany.InTransaction)
                                     //{
                                     //    oCompany.EndTransaction(BoWfTransOpt.wf_RollBack);
@@ -308,6 +341,11 @@ namespace EatNGoPost
                                 else
                                 {
                                     Console.WriteLine("Receipt for " + OrderPayment.Order_Number + " - " + OrderPayment.Location_Code + " - " + OrderPayment.Order_Date.ToShortDateString() + " - created successfully ");
+                                    var RecNum = (from c in context.InvoiceNumbers
+                                                  select c.ReceiptDocNum).Max();
+
+                                    OINV.ReceiptDocNum = RecNum;
+
                                 }
 
                                 break;
@@ -318,7 +356,9 @@ namespace EatNGoPost
                         //{
                         //    oCompany.EndTransaction(BoWfTransOpt.wf_Commit);
                         //}
-                        string strSql = "Update Orders Set DocNum = " + OINV.DocNum.ToString() + ", errMsg = '" + OINV.ErrMsg + "'" ;
+                        string strSql = "Update Orders Set DocNum = " + OINV.DocNum.ToString() + ", errMsg = '" + OINV.ErrMsg +
+                                "', ReceiptDocNum = " + OINV.ReceiptDocNum.ToString() + ", ReceiptErrMsg = '" + OINV.ReceiptErrMsg + "'";
+                          ;
                         strSql += " Where id = " + OINV.id.ToString();
                         int noOfRowsAffected = context.Database.ExecuteSqlCommand(strSql);
 

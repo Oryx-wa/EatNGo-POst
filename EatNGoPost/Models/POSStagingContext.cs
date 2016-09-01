@@ -26,6 +26,7 @@ namespace EatNGoPost.Models
         public DbSet<Products2> Products2 { get; set; }
         public DbSet<ProductsText> ProductsTexts { get; set; }
         public DbSet<SAPMapping> SAPMappings { get; set; }
+        public DbSet<POSTerminals> POSTerminals { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -38,6 +39,7 @@ namespace EatNGoPost.Models
             modelBuilder.Configurations.Add(new Products2Map());
             modelBuilder.Configurations.Add(new ProductsTextMap());
             modelBuilder.Configurations.Add(new SAPMappingMap());
+            modelBuilder.Configurations.Add(new POSTerminalsMap());
         }
     }
 }

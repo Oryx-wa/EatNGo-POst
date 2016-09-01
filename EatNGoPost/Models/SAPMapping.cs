@@ -13,5 +13,6 @@ namespace EatNGoPost.Models
         public string BPCode { get; set; }
         public string CashGL { get; set; }
         public string BankGL { get; set; }
+        public bool ConsumptionTax { get; set; }
     }
 }
